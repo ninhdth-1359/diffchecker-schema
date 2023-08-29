@@ -15,15 +15,13 @@ jobs:
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: diffchecker_schema_test
-          MYSQL_HOST: 127.0.0.1
+          MYSQL_HOST: DB
         # Set health checks to wait until mysql database has started (it takes some seconds to start)
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-    env:
-      RAILS_ENV: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -36,7 +34,7 @@ jobs:
       # - name: init dotenv
       #   run: cp .env.example .env
       # # Add or replace database setup steps here
-      - name: Set up database schema
-        run:  bin/rails db:schema:load && bin/rails db:migrate
-      # - name: run diffchecker schema
-      #   run: script/diffchecker.sh
+      - name: run diffchecker schema
+        run: scripts/diffchecker.sh
+      # - name: Set up database schema
+      #   run:  bin/rails db:schema:load && bin/rails db:migrate
