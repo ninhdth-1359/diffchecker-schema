@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_HOST=127.0.0.1
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=diffchecker_schema_test
+    ports:
+      - '3306:3306'
+volumes:
+  db:
+    driver: local
