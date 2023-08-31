@@ -17,10 +17,6 @@ ActiveRecord::Schema.define(version: 2023_08_31_041356) do
     t.string "description"
   end
 
-  create_table "categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
-  end
-
   create_table "products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "part_number"
