@@ -24,8 +24,8 @@ jobs:
           --health-retries=3
     env:
       RAILS_ENV: test
-      DB_HOST: 127.0.0.1
-
+      DB_USERNAME: root
+      DB_HOST: db
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -35,10 +35,18 @@ jobs:
         with:
           bundler-cache: true
 
-      # - name: init dotenv
-      #   run: cp .env.example .env
-      # # Add or replace database setup steps here
-      - name: run diffchecker schema
-        run: scripts/diffchecker.sh
-      # - name: Set up database schema
-      #   run:  bin/rails db:schema:load && bin/rails db:migrate
+      - name: Create database
+        run: bundle exec rails db:create --trace
+
+      - name: Migration test
+        run : bundle exec rails db:schema:load && bundle exec rails db:migrate --trace
+
+      - name: test diff schema
+        run: |
+          if git diff --quiet db/schema.rb; then
+            echo "No significant changes"
+            exit 0
+          else
+            echo "There are some significant changes, let's trigger something..."
+            exit 1
+          fi
