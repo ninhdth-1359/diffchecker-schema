@@ -1,8 +1,4 @@
-set -o allexport
-source .env.example
-set +o allexport
-
-bin/rails db:schema:load && bin/rails db:migrate
+bundle exec rails db:migrate --trace
 
 if git diff --quiet db/schema.rb; then
    echo "No significant changes"

@@ -36,14 +36,15 @@ jobs:
       - name: Create database
         run: bundle exec rails db:create --trace
 
-      - name: Migration test
-        run : bundle exec rails db:schema:load && bundle exec rails db:migrate --trace
+      - name: Migration
+        run: bundle exec rails db:migrate --trace
 
-      - name: test diff schema
+      - name: run diffchecker schema
         run: |
-          DIFF="$(git diff HEAD)"
-          if [[ $DIFF != '' ]]; then
-            echo 'db:migrateを実行するとschema.rbにdiffが出るようです。正しくschema.rbをコミットしているか確認してください'
-            git diff HEAD
+          if git diff --quiet db/schema.rb; then
+            echo "No significant changes"
+            exit 0
+          else
+            echo "There are some significant changes, let's trigger something..."
             exit 1
           fi
