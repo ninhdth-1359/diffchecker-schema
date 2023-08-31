@@ -34,7 +34,9 @@ jobs:
         run: bundle exec rails db:create --trace
 
       - name: Migration
-        run: bundle exec rails db:migrate --trace
+        run: |
+          bundle exec rails db:schema:load --trace
+          bundle exec rails db:migrate --trace
 
       - name: run diffchecker schema
         run: |
