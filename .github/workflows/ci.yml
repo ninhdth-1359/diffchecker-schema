@@ -25,7 +25,7 @@ jobs:
     env:
       RAILS_ENV: test
       DB_USERNAME: root
-      DB_HOST: db
+      DB_HOST: 127.0.0.1
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
