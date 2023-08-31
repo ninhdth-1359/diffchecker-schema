@@ -1,0 +1,49 @@
+name: "Ruby on Rails CI"
+on:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - "3306:3306"
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: diffchecker_schema_test
+          MYSQL_HOST: 127.0.0.1
+        # Set health checks to wait until mysql database has started (it takes some seconds to start)
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    env:
+      RAILS_ENV: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      # Add or replace dependency steps here
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Create database
+        run: bundle exec rails db:create --trace
+
+      - name: Migration
+        run: |
+          bundle exec rails db:schema:load --trace
+          bundle exec rails db:migrate --trace
+
+      - name: run diffchecker schema
+        run: |
+          if git diff --quiet db/schema.rb; then
+            echo "No significant changes"
+            exit 0
+          else
+            echo "There are some significant changes, let's trigger something..."
+            exit 1
+          fi
