@@ -40,10 +40,9 @@ jobs:
 
       - name: run diffchecker schema
         run: |
-          if git diff --quiet db/schema.rb; then
-            echo "No significant changes"
-            exit 0
-          else
-            echo "There are some significant changes, let's trigger something..."
+          DIFF="$(git diff HEAD)"
+          if [[ $DIFF != '' ]]; then
+            echo 'db:migrateを実行するとschema.rbにdiffが出るようです。正しくschema.rbをコミットしているか確認してください'
+            git diff HEAD
             exit 1
           fi
