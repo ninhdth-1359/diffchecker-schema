@@ -1,6 +1,8 @@
 name: "Ruby on Rails CI"
 on:
-  pull_request:
+  push:
+    paths:
+      - 'db/migrate/**'
 jobs:
   test:
     runs-on: ubuntu-latest
