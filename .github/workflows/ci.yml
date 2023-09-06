@@ -24,15 +24,6 @@ jobs:
     env:
       RAILS_ENV: test
     steps:
-      - name: set MySQL sql_mode
-        run: |
-          mysql --ssl-mode=DISABLE --protocol=tcp --host 127.0.0.1 --user=root --password=${DB_PASSWORD} mysql <<SQL
-          SET GLOBAL sql_mode = 'NO_ENGINE_SUBSTITUTION';
-          SET GLOBAL character_set_server = 'utf8mb4';
-          SET GLOBAL collation_server = 'utf8mb4_general_ci';
-          SET GLOBAL character_set_database = 'utf8mb4';
-          SQL
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -47,7 +38,6 @@ jobs:
 
       - name: Migration
         run: |
-          bundle exec rails db:schema:load --trace
           bundle exec rails db:migrate --trace
 
       - name: run diffchecker schema
