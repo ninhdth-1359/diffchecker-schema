@@ -24,6 +24,14 @@ jobs:
     env:
       RAILS_ENV: test
     steps:
+      - name: set MySQL sql_mode
+        run: |
+          mysql --ssl-mode=DISABLE --protocol=tcp --host 127.0.0.1 --user=root --password= mysql <<SQL
+          SET GLOBAL sql_mode = 0;
+          SET GLOBAL character_set_server = 'utf8mb4';
+          SET GLOBAL collation_server = 'utf8mb4_general_ci';
+          SQL
+
       - name: Checkout code
         uses: actions/checkout@v3
 
