@@ -22,20 +22,20 @@ jobs:
           --health-timeout=5s
           --health-retries=3
     steps:
-      - name: set MySQL sql_mode
-        run: |
-          mysql --ssl-mode=DISABLE --protocol=tcp --host 127.0.0.1 --user=root --password= mysql <<SQL
-          SET GLOBAL sql_mode = 0;
-          SET GLOBAL character_set_server = 'utf8mb4';
-          SET GLOBAL collation_server = 'utf8mb4_general_ci';
-          SET GLOBAL character_set_database = 'utf8mb4';
-          SQL
-      - name: get MYSQL sql_mode
-        run: |
-          mysql --ssl-mode=DISABLE --protocol=tcp --host 127.0.0.1 --user=root --password= mysql <<SQL
-          SHOW VARIABLES LIKE 'collation_server';
-          SHOW VARIABLES LIKE 'character_set_server';
-          SQL
+      # - name: set MySQL sql_mode
+      #   run: |
+      #     mysql --ssl-mode=DISABLE --protocol=tcp --host 127.0.0.1 --user=root --password= mysql <<SQL
+      #     SET GLOBAL sql_mode = 0;
+      #     SET GLOBAL character_set_server = 'utf8mb4';
+      #     SET GLOBAL collation_server = 'utf8mb4_general_ci';
+      #     SET GLOBAL character_set_database = 'utf8mb4';
+      #     SQL
+      # - name: get MYSQL sql_mode
+      #   run: |
+      #     mysql --ssl-mode=DISABLE --protocol=tcp --host 127.0.0.1 --user=root --password= mysql <<SQL
+      #     SHOW VARIABLES LIKE 'collation_server';
+      #     SHOW VARIABLES LIKE 'character_set_server';
+      #     SQL
 
       - name: Checkout code
         uses: actions/checkout@v3
