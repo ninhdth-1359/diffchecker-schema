@@ -5,35 +5,38 @@ on:
       - 'db/migrate/**'
 jobs:
   test:
-    # runs-on: ubuntu-latest
-    # services:
-    #   mysql:
-    #     image: mysql:8.0
-    #     ports:
-    #       - "3306:3306"
-    #     env:
-    #       MYSQL_ROOT_PASSWORD: mypassword
-    #       MYSQL_DATABASE: diffchecker_schema_test
-    #       MYSQL_HOST: 127.0.0.1
-    #       MYSQL_COLLATION: utf8mb4_general_ci
-    #     # Set health checks to wait until mysql database has started (it takes some seconds to start)
-    #     options: >-
-    #       --health-cmd="mysqladmin ping"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=3
-    # env:
-    #   RAILS_ENV: test
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - "3306:3306"
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: diffchecker_schema_test
+          MYSQL_HOST: 127.0.0.1
+        # Set health checks to wait until mysql database has started (it takes some seconds to start)
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+    env:
+      RAILS_ENV: test
     steps:
-      - name: set up mysql
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
-          collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-          mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
-          mysql database: 'utf8mb4_general_ci' # Optional, default value is "test". The specified database which will be create
-          mysql root password: "password" # Required if "mysql user" is empty, default is empty. The root superuser password
-          mysql user: 'root' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+      - name: set MySQL sql_mode
+        run: |
+          mysql --ssl-mode=DISABLE --protocol=tcp --host 127.0.0.1 --user=root --password= mysql <<SQL
+          SET GLOBAL sql_mode = 'NO_ENGINE_SUBSTITUTION';
+          SET GLOBAL character_set_server = 'utf8mb4';
+          SET GLOBAL collation_server = 'utf8mb4_general_ci';
+          SET GLOBAL character_set_database = 'utf8mb4';
+          SQL
+      - name: get MYSQL sql_mode
+        run: |
+          mysql --ssl-mode=DISABLE --protocol=tcp --host 127.0.0.1 --user=root --password= mysql <<SQL
+          SHOW VARIABLES LIKE 'collation_server';
+          SQL
 
       - name: Checkout code
         uses: actions/checkout@v3
