@@ -25,6 +25,13 @@ jobs:
     env:
       RAILS_ENV: test
     steps:
+      - name: Config mysql
+        run: |
+          mysql -h mysql -u root -p diffchecker_schema_test <<EOF
+          ALTER DATABASE diffchecker_schema_test CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+          ALTER TABLE mytable CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+          EOF
+
       - name: Checkout code
         uses: actions/checkout@v3
 
